@@ -14,6 +14,7 @@ AND,((DOMAIN-SUFFIX,bilibili.tv), (PROTOCOL,HTTPS)),REJECT
 
 [Url Rewrite]
 # Block general ad-related API requests
+^https?:\/\/app\.bilibili\.com\/ads\/app_open.* _ reject-200
 ^https?:\/\/api\.bilibili\.com\/x\/v2\/splash.*$ _ reject-200
 ^https?:\/\/api\.bilibili\.com\/x\/v2\/advertise.*$ _ reject-200
 ^https?:\/\/api\.bilibili\.com\/pgc\/season\/.*\/ad.*$ _ reject-200
