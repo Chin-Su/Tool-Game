@@ -1,0 +1,27 @@
+#!name=Bilibili Premium
+#!desc=Block ads in Bilibili app and enable enhanced features
+#!arguments=debug:false,scriptExecutionEngine:auto
+
+[Rule]
+# Block ad-related domains
+DOMAIN-SUFFIX,bilibili.com,REJECT
+DOMAIN-SUFFIX,hdslb.com,REJECT
+
+# Block specific ad requests
+AND,((DOMAIN-SUFFIX,cm.bilibili.com), (PROTOCOL,HTTPS)),REJECT
+AND,((DOMAIN,api.bilibili.com/x/v2/feed/index), (PROTOCOL,HTTPS)),REJECT
+AND,((DOMAIN-SUFFIX,bilibili.tv), (PROTOCOL,HTTPS)),REJECT
+
+[Url Rewrite]
+# Block general ad-related API requests
+^https?:\/\/api\.bilibili\.com\/x\/v2\/splash.*$ _ reject-200
+^https?:\/\/api\.bilibili\.com\/x\/v2\/advertise.*$ _ reject-200
+^https?:\/\/api\.bilibili\.com\/pgc\/season\/.*\/ad.*$ _ reject-200
+^https?:\/\/cm\.bilibili\.com\/ad.*$ _ reject-200
+
+[Script]
+bilibili.request = type=http-request,pattern=^https:\/\/api\.bilibili\.com\/x\/(v2|pgc).*?,requires-body=1,max-size=-1,engine={{{scriptExecutionEngine}}},script-path=https://raw.githubusercontent.com/your-repo/bilibili.request.js
+bilibili.response = type=http-response,pattern=^https:\/\/api\.bilibili\.com\/x\/(v2|pgc).*?,requires-body=1,max-size=-1,engine={{{scriptExecutionEngine}}},script-path=https://raw.githubusercontent.com/your-repo/bilibili.response.js
+
+[MITM]
+hostname = %APPEND% *.bilibili.com,*.hdslb.com,*.bilibili.tv,cm.bilibili.com
